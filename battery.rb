@@ -22,6 +22,8 @@ def start_battery_level_polling(energy_service)
     level = energy_service.battery_level
     puts "Battery level is at #{level}%"
 
+    notify_battery_level(level) if level >= 95
+
     sleep BATTERY_POLLING_INTERVAL
 
     # Every 100 level checks, break the loop and restart to make sure the car is still charging
