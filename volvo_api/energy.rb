@@ -35,8 +35,7 @@ module VolvoAPI
     end
 
     def charging?
-      true
-      # request_charging_status == CHARGING_STATUSES[:charging]
+      request_charging_status == CHARGING_STATUSES[:charging]
     end
 
     private
