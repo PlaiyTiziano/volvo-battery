@@ -56,8 +56,10 @@ module VolvoAPI
       res = Net::HTTP.post(uri, body, authorization_headers)
 
       unless res.is_a?(Net::HTTPSuccess)
-        raise VolvoAPITokenRenewError.new('Token renewal failure',
-                                          JSON.parse(res.body))
+        raise VolvoAPITokenRenewError.new(
+          'Token renewal failure',
+          JSON.parse(res.body)
+        )
       end
 
       JSON.parse(res.body)

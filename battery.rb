@@ -42,7 +42,9 @@ end
 def renew_tokens
   refresh_token = Utils.read_refresh_token
 
-  VolvoAPI::Auth.new.renew_tokens(refresh_token)
+  tokens = VolvoAPI::Auth.new.renew_tokens(refresh_token)
+
+  Utils.write_tokens_to_files(tokens)
 end
 
 def initial_authentication
@@ -53,12 +55,12 @@ def initial_authentication
 
   code = VolvoAPI::Server.new.start_and_wait_for_code
 
-  auth.exchange_code_for_tokens(code)
+  tokens = auth.exchange_code_for_tokens(code)
+
+  Utils.write_tokens_to_files(tokens)
 end
 
-def start(retry_count = 0)
-  return puts 'retry count reached' if retry_count > 5
-
+def start
   energy_service = VolvoAPI::Energy.new(ENV['VIN'], Utils.read_access_token)
 
   sleep CHARGING_STATUS_INTERVAL until energy_service.charging?
@@ -67,13 +69,11 @@ def start(retry_count = 0)
 rescue VolvoAPI::VolvoAPIAuthError
   renew_tokens
 
-  start(retry_count + 1)
+  start
 end
 
 begin
-  tokens = Utils.refresh_token_exists? ? renew_tokens : initial_authentication
-
-  Utils.write_tokens_to_files(tokens)
+  Utils.refresh_token_exists? ? renew_tokens : initial_authentication
 
   start
 rescue VolvoAPI::VolvoAPITokenRenewError => e
