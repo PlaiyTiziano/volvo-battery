@@ -28,7 +28,8 @@ def start_battery_level_polling(energy_service)
 
     # Every 100 level checks, break the loop and restart to make sure the car is still charging
     counter += 1
-    break if counter > BATCH_LEVEL_CHECK_THRESHOLD
+
+    break if counter > BATTERY_LEVEL_CHECK_THRESHOLD
   end
 
   start
