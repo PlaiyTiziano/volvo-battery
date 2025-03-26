@@ -52,7 +52,7 @@ def initial_authentication
   auth = VolvoAPI::Auth.new
   url = auth.authentication_url
 
-  puts "Please visit: #{url}"
+  system("osascript -e 'open location \"#{url}\"'")
 
   code = VolvoAPI::Server.new.start_and_wait_for_code
 
